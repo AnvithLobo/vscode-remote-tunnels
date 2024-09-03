@@ -1,0 +1,29 @@
+#!/usr/bin/with-contenv bash
+
+mkdir -p /data/{.ssh,.vscode-server,.vscode}
+
+if [[ -n "${SUDO_PASSWORD}" ]]; then
+    echo "setting up sudo access"
+    if ! grep -q 'user' /etc/sudoers; then
+        echo "adding user to sudoers"
+        echo "user ALL=(ALL:ALL) ALL" >> /etc/sudoers
+    fi
+    echo "setting sudo password using SUDO_PASSWORD env var"
+    echo -e "${SUDO_PASSWORD}\n${SUDO_PASSWORD}" | passwd user
+    fi
+fi
+
+if [[ ! -f /data/.bashrc ]]; then
+    cp /root/.bashrc /data/.bashrc
+fi
+
+if [[ ! -f /data/.profile ]]; then
+    cp /root/.profile /data/.profile
+fi
+
+
+chmod 700 /data/.ssh
+if [[ -n "$(ls -A /data/.ssh)" ]]; then
+    chmod 600 /data/.ssh/*
+fi
+

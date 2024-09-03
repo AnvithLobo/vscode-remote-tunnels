@@ -9,6 +9,7 @@ ENV MACHINE_NAME=vscode-remote
 
 ARG TARGETARCH
 ARG BUILD=stable
+ARG INSIDERS=true
 
 COPY src/* /usr/local/bin/
 
@@ -16,11 +17,17 @@ RUN apt-get update && \
     export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
     tzdata \
+    sudo \
+    nano \
+    net-tools \
     curl ca-certificates \
     git build-essential && \
     apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-    download_vscode $TARGETARCH $BUILD
+    download_vscode $TARGETARCH $BUILD $INSIDERS && \
+    useradd --home-dir /data --shell /bin/bash user
 
-WORKDIR /home/workspace
+USER user
+
+WORKDIR /data
 
 ENTRYPOINT [ "entrypoint" ]

@@ -1,25 +1,15 @@
 version: "2"
-configs:
-  init_script:
-    file: /path/to/your/init/script
-volumes:
-  vscode_data:
-  vscode_cli_data:
 services:
   vscode:
-    image: ilteoood/vscode-remote-tunnels
-    container_name: vscode-remote-tunnels
+    image: vscode-remote-tunnels
+    container_name: vscode-remote
     environment:
       - MACHINE_NAME=YOUR_MACHINE_NAME
+      - SUDO_PASSWORD=password #optional
     volumes:
-      - vscode_data:/root/.vscode-server
-      - vscode_cli_data:/root/.vscode/cli/code_tunnel.json
-      - vscode_cli_data:/root/.vscode/cli/token.json
-      - /var/run/docker.sock:/var/run/docker.sock
-    configs:
-      - source: init_script
-        target: /usr/local/bin/init
-        mode: 777
+      - vscode_data:/data/.vscode-server
+      - vscode_cli_data:/data/.vscode
     restart: unless-stopped
     dns:
       - 1.1.1.1
+    user: "${UID}:${GID}"  #optionally set this to your user_id:group_id (id username) if running docker with sudo ex: user: 1000:1000

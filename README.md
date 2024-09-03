@@ -19,17 +19,28 @@ The container is configurable using 1 environment variable:
 | Name | Mandatory | Default value| Description |
 |------|-----------|--------------|-------------|
 |MACHINE_NAME|No|`vscode-remote`|The name of the machine that will be used to access the tunnel. It **must** be less than 20 characters.|
+|SUDO_PASSWORD|No|`null`|Password for `user` setting this will also add the user to sudoers |
 
 Additionally, it is also possible to override the script at path `/usr/local/bin/init` to install additional software when the container boots.
 
 ## Execution
+
+### Build Image
+
+```sh
+git clone https://github.com/AnvithLobo/vscode-remote-tunnels
+cd vscode-remote-tunnels
+sudo docker build -t vscode-remote-tunnels .
+```
+
+### Run Container
 
 You can run this image using [Docker compose](https://docs.docker.com/compose/) and the [sample file](./docker-compose.yml) provided.  
 
 Or you can use the standard `docker run` command.
 
 ```sh
-sudo docker run --name CONTAINER_NAME -e MACHINE_NAME=YOUR_MACHINE_NAME ilteoood/vscode-remote-tunnels
+sudo docker run --name CONTAINER_NAME -e MACHINE_NAME=YOUR_MACHINE_NAME -e SUDO_PASSWORD=some_random_password vscode-remote-tunnels
 ```
 
 ## Do you like my work?
