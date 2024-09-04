@@ -1,3 +1,5 @@
 #!/bin/bash
 
-bash user_init && bash init && code tunnel --accept-server-license-terms --disable-telemetry --name ${MACHINE_NAME}
+bash user_init
+bash init
+su - user -c "code tunnel --accept-server-license-terms --disable-telemetry --name ${MACHINE_NAME} --cli-data-dir /config/"

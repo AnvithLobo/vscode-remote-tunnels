@@ -11,7 +11,7 @@ ARG TARGETARCH
 ARG BUILD=stable
 ARG INSIDERS=true
 
-COPY src/* /usr/local/bin/
+COPY --chmod=755 src/* /usr/local/bin/
 
 RUN apt-get update && \
     export DEBIAN_FRONTEND=noninteractive && \
@@ -23,10 +23,14 @@ RUN apt-get update && \
     curl ca-certificates \
     git build-essential && \
     apt-get autoremove -y && apt-get clean -y && rm -rf /var/lib/apt/lists/* && \
-    download_vscode $TARGETARCH $BUILD $INSIDERS && \
-    useradd --home-dir /data --shell /bin/bash user
+    download_vscode $TARGETARCH $BUILD $INSIDERS
 
-USER user
+RUN userdel -r ubuntu && \
+    useradd --home-dir /data --shell /bin/bash user && \
+    mkdir -p /config && \
+    mkdir -p /data
+
+USER root
 
 WORKDIR /data
 

@@ -1,6 +1,13 @@
 #!/usr/bin/with-contenv bash
 
-mkdir -p /data/{.ssh,.vscode-server,.vscode}
+PUID=${PUID:-911}
+PGID=${PGID:-911}
+
+groupmod -o -g "$PGID" user
+usermod -o -u "$PUID" user
+
+
+mkdir -p /data/.ssh
 
 if [[ -n "${SUDO_PASSWORD}" ]]; then
     echo "setting up sudo access"
@@ -10,7 +17,6 @@ if [[ -n "${SUDO_PASSWORD}" ]]; then
     fi
     echo "setting sudo password using SUDO_PASSWORD env var"
     echo -e "${SUDO_PASSWORD}\n${SUDO_PASSWORD}" | passwd user
-    fi
 fi
 
 if [[ ! -f /data/.bashrc ]]; then
@@ -22,8 +28,21 @@ if [[ ! -f /data/.profile ]]; then
 fi
 
 
+# chown -R user:user /data
 chmod 700 /data/.ssh
 if [[ -n "$(ls -A /data/.ssh)" ]]; then
     chmod 600 /data/.ssh/*
 fi
 
+echo '
+───────────────────────────────────────
+GID/UID
+───────────────────────────────────────'
+echo "
+User UID:    $(id -u user)
+User GID:    $(id -g user)
+───────────────────────────────────────
+"
+
+lsiown -R user:user /data
+lsiown -R user:user /config
